@@ -24,9 +24,13 @@ For search strings inlcuding spaces, enclose the query in double-quotes
 ```
 
 For Example:
+
 `C:\>onserver.py noticeme` (find all map services, MXDs, or data sources / feature classes with noticeme as a substring)
+
 `C:\>onserver.py noticeme_layers` (get info about any map service(s) named noticeme_layers)
+
 `C:\>onserver.py council_nm` (find all map services that reference any copy of the council_nm feature class)
+
 `C:\>onserver.py noticeme_layers.gdb` (find all map services that use anything in a particular GDB)
 
 
