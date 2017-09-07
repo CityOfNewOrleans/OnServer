@@ -266,14 +266,17 @@ def get_args():
 
 if __name__ == '__main__':
     args = get_args()
-    try:
-        arcdir = find_arcserver_config()
-    except IOError as e:
-        if e.errno == errno.ENOENT:
-            print 'Cannot find ArcGIS Server configuration.'
-            sys.exit(1)
-        else:
-            raise
+    if args.configstore:
+        arcdir = args.configstore
+    else:
+        try:
+            arcdir = find_arcserver_config()
+        except IOError as e:
+            if e.errno == errno.ENOENT:
+                print 'Cannot find ArcGIS Server configuration.'
+                sys.exit(1)
+            else:
+                raise
     manifests = get_manifests(arcdir)
     services = []
     for manifile in manifests:
