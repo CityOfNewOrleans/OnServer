@@ -1,4 +1,5 @@
 import argparse
+import datetime
 import errno
 import json
 import string
@@ -99,6 +100,39 @@ class MapService(object):
         output.append(' {0}'.format(self.mxd))
         for db in self._dbnames:
             output.append(dbline.format(db))
+            for fc in sorted(self._datastructure[db]):
+                output.append(fcline.format(fc))
+            output.append('')
+        output.append('')
+        return '\n'.join(output)
+
+    def csv_repr(self):
+        """
+        Create a printable CSV representation of the map service.
+
+        returns a string for printing.
+        """
+        if len(self._dbnames) > 1:
+            output = '{0},{1},{2},{3}'.format(self.name, self.url, self.mxd, self._dbnames[0])
+            for db in self._dbnames[1:]:
+                dbnames_output = '\n,,,{0}'.format(db)
+                output = output + dbnames_output
+        else:
+            output = '{0},{1},{2},{3}'.format(self.name, self.url, self.mxd, self._dbnames[0])
+        return output
+
+    def md_repr(self):
+        """
+        Creates a printable Markdown representation of the map service.
+
+        returns a string for printing.
+        """
+        dbline = '- {0}'
+        fcline = '    + {0}'
+        output = ['## {0} ({1})\n'.format(self.name, self.url)]
+        output.append('**{0}**\n'.format(self.mxd.replace("\\", "\\\\")))
+        for db in self._dbnames:
+            output.append(dbline.format(db.replace("\\", "\\\\")))
             for fc in sorted(self._datastructure[db]):
                 output.append(fcline.format(fc))
             output.append('')
@@ -224,6 +258,9 @@ def get_args():
                         nargs='?', default='')
     parser.add_argument('-q', '--quiet', help='only display service names and URLs', action='store_true')
     parser.add_argument('-qq', '--veryquiet', help='only display service URLs, comma delimited', action='store_true')
+    parser.add_argument('-cs', '--configstore', help='explicitly provide full path to config store', action='store')
+    parser.add_argument('-csv', '--tocsv', help='create csv output', action='store_true')
+    parser.add_argument('-md', '--markdown', help='create Markdown output', action='store_true')
     return parser.parse_args()
 
 
@@ -247,9 +284,16 @@ if __name__ == '__main__':
         if args.veryquiet:
             print ','.join([x.veryquiet_repr() for x in services])
         else:
+            if args.tocsv:
+                print "Run time: {0}".format(datetime.datetime.now().strftime("%Y-%m-%d @ %I:%M:%S %p"))
+                print "Service Name,Service Folder,Source MXD Path,Data Source(s)"
             for svc in services:
                 if args.quiet:
                     print svc.quiet_repr()
+                elif args.tocsv:
+                    print svc.csv_repr()
+                elif args.markdown:
+                    print svc.md_repr()
                 else:
                     print svc
     else:
