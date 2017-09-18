@@ -9,16 +9,19 @@ OnServer also allows you to pass a search term on the command line, narrowing th
 ```
 onserver.py
 usage: Find a featureclass, database, mxd, or service in ArcGIS Server
-       [-h] [-q] [-qq] [name]
+       [-h] [-q] [-qq] [-cs] [-csv] [-md] [name]
 
 positional arguments:
-  name              string for which to search (blank returns info on all
-                    services)
+  name                string for which to search (blank returns info on all
+                      services)
 
 optional arguments:
-  -h, --help        show this help message and exit
-  -q, --quiet       only display service names and URLs
-  -qq, --veryquiet  only display service URLs, comma delimited
+  -h, --help          show this help message and exit
+  -q, --quiet         only display service names and URLs
+  -qq, --veryquiet    only display service URLs, comma delimited
+  -cs, --configstore  specify a path path to a configuration store, such as \\server\share\directories\arcgissystem\arcgisinput
+  -csv, --tocsv       display output as comma-separated values
+  -md, --markdown     display output as Markdown
 
 For search strings inlcuding spaces, enclose the query in double-quotes
 ```
@@ -86,6 +89,22 @@ For commonly used feature classes (think parcels or addresses), this can give a 
     WhereYatPresentation (dev/WhereYatPresentation)
 
 to get a brief listing of the map services and the web path to the map services.  You can then use repeated calls to OnServer to drill down into those map services and get the information you need.
+
+#### Piping output to a file
+
+OnServer output can very easily be piped to a file.
+
+Pipe stdout to a text file:
+
+`C:\>onserver.py > output.txt`
+
+Pipe CSV output to a file:
+
+`C:\>onserver.py -csv > output.csv`
+
+Create Markdown output and pipe it to a file:
+
+`C:\>onserver.py -md > output.md`
 
 ### Automation
 
